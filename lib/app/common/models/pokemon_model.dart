@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+
 class PokemonModel {
   int? id;
   String? name;
-  String? image;
 
   PokemonModel({
     this.id,
     this.name,
-    this.image,
   });
 
   List<int> blackList = [
@@ -69,7 +69,29 @@ class PokemonModel {
           ? int.parse(json['url'].split('/')[6])
           : json['id'],
       name: json['name'],
-      image: json['image'],
     );
   }
+
+  static Map<String, Color> kTypeColors = <String, Color>{
+    'normal': Color(0xFFBDBEB0),
+    'poison': Color(0xFF995E98),
+    'psychic': Color(0xFFE96EB0),
+    'grass': Color(0xFF9CD363),
+    'ground': Color(0xFFE3C969),
+    'ice': Color(0xFFAFF4FD),
+    'fire': Color(0xFFE7614D),
+    'rock': Color(0xFFCBBD7C),
+    'dragon': Color(0xFF8475F7),
+    'water': Color(0xFF6DACF8),
+    'bug': Color(0xFFC5D24A),
+    'dark': Color(0xFF886958),
+    'fighting': Color(0xFF9E5A4A),
+    'ghost': Color(0xFF7774CF),
+    'steel': Color(0xFFC3C3D9),
+    'flying': Color(0xFF81A2F8),
+    'electric': Color(0xFFF9E65E),
+    'fairy': Color(0xFFEEB0FA),
+  };
+
+  Color getTypeColor(String type) => kTypeColors[type] ?? Colors.black;
 }

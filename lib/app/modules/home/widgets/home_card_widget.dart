@@ -58,6 +58,12 @@ class _HomeCardState extends State<HomeCard> {
                     .toList(),
               ),
               Visibility(
+                visible: widget.controller.listPokemonModel.isEmpty,
+                child: Center(
+                  child: Text('Falha ao encontrar dados'),
+                ),
+              ),
+              Visibility(
                 visible: isLoading,
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -80,7 +86,7 @@ class _HomeCardState extends State<HomeCard> {
         setState(() {
           isLoading = true;
         });
-        await widget.controller.getPokemonsByUrl();
+        await widget.controller.getPokemonsByUrl(context: context);
       }
       setState(() {
         isLoading = false;

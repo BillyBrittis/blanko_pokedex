@@ -1,5 +1,8 @@
+import 'package:blanko_podekex/app/common/models/pokemon_info_model.dart';
 import 'package:blanko_podekex/app/common/models/pokemon_model.dart';
 import 'package:blanko_podekex/app/common/repositories/pokemon_repository.dart';
+import 'package:blanko_podekex/app/core/modal/modals.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_controller.g.dart';
@@ -14,6 +17,9 @@ abstract class HomeControllerBase with Store {
   List<PokemonModel> listPokemonModel = [];
 
   @observable
+  PokemonInfoModel? pokemonInfoModel;
+
+  @observable
   String nextUrl = '';
 
   @observable
@@ -23,8 +29,17 @@ abstract class HomeControllerBase with Store {
   changeSearchAppear() => searchAppear = !searchAppear;
 
   @action
-  Future<List<PokemonModel>> getPokemons() async {
+  Future<List<PokemonModel>> getPokemons(
+      {required BuildContext context}) async {
     final result = await repository.getPokemons();
+
+    if (result == 'Falha ao buscar dados.') {
+      ShowModal.error(context: context, textMsg: result);
+      await Future.delayed(Duration(seconds: 2));
+      Navigator.pop(context);
+
+      return [];
+    }
 
     final list = result['results'] as List<dynamic>;
 
@@ -36,8 +51,17 @@ abstract class HomeControllerBase with Store {
   }
 
   @action
-  Future<List<PokemonModel>> getPokemonsByUrl() async {
-    final result = await repository.getNextPokemons(url: nextUrl);
+  Future<List<PokemonModel>> getPokemonsByUrl(
+      {required BuildContext context}) async {
+    final result = await repository.getPokemonByURL(url: nextUrl);
+
+    if (result == 'Falha ao buscar dados.') {
+      ShowModal.error(context: context, textMsg: result);
+      await Future.delayed(Duration(seconds: 2));
+      Navigator.pop(context);
+
+      return [];
+    }
 
     final list = result['results'] as List<dynamic>;
 
@@ -55,11 +79,72 @@ abstract class HomeControllerBase with Store {
   }
 
   @action
-  Future<List<PokemonModel>> filterPokemon(String param) async {
+  Future<List<PokemonModel>> filterPokemon(
+      {required BuildContext context, required String param}) async {
     final result = await repository.getPokemonByNameID(param: param);
+
+    if (result == 'Falha ao buscar dados.') {
+      ShowModal.error(
+          context: context, textMsg: "Nenhum resultado encontrado.");
+      await Future.delayed(Duration(seconds: 2));
+      Navigator.pop(context);
+
+      return [];
+    }
 
     listPokemonModel = [PokemonModel.fromJson(result)];
 
     return listPokemonModel;
+  }
+
+  @action
+  Future<PokemonInfoModel> getPokemonByName(
+      {required BuildContext context, required String name}) async {
+    final pokemonResponse = await repository.getPokemonByNameID(param: name);
+
+    final pokemonID =
+        int.parse(pokemonResponse['species']['url'].split('/')[6]);
+
+    final specieResponse =
+        await repository.getPokemonSpecies(param: pokemonID.toString());
+
+    if (pokemonResponse == 'Falha ao buscar dados.' ||
+        specieResponse == 'Falha ao buscar dados.') {
+      ShowModal.error(context: context, textMsg: "Falha ao buscar dados.");
+      await Future.delayed(Duration(seconds: 2));
+      Navigator.pop(context);
+
+      return pokemonInfoModel!;
+    }
+
+    Map<String, dynamic> jsonPokemonInfo = pokemonResponse;
+    Map<String, dynamic> jsonPokemonSpecies = specieResponse;
+    Map<String, dynamic> evolveResponse = {};
+    Map<String, dynamic> jsonPokemonEvolveFrom = {};
+
+    if (jsonPokemonSpecies['evolves_from_species'] != null) {
+      evolveResponse = await repository.getPokemonByNameID(
+          param: jsonPokemonSpecies['evolves_from_species']['name']);
+    }
+
+    if (evolveResponse.isNotEmpty) {
+      jsonPokemonEvolveFrom = {
+        'name_evolve': evolveResponse['name'],
+        'image_evolve': evolveResponse['sprites']['other']['official-artwork']
+            ['front_default'],
+        'types_evolve': evolveResponse['types'],
+        'id_evolve': evolveResponse['id'],
+      };
+    }
+
+    final mergedPokemonInfo = {
+      ...jsonPokemonInfo,
+      ...jsonPokemonSpecies,
+      ...jsonPokemonEvolveFrom,
+    };
+
+    pokemonInfoModel = PokemonInfoModel.fromJson(mergedPokemonInfo);
+
+    return pokemonInfoModel!;
   }
 }

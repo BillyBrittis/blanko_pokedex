@@ -3,8 +3,9 @@ import 'package:blanko_podekex/app/core/data/http/http.dart';
 
 abstract class PokemonRepository {
   Future<dynamic> getPokemons();
-  Future<dynamic> getNextPokemons({required String url});
+  Future<dynamic> getPokemonByURL({required String url});
   Future<dynamic> getPokemonByNameID({required String param});
+  Future<dynamic> getPokemonSpecies({required String param});
 }
 
 class PokemonRepositoryImp implements PokemonRepository {
@@ -15,13 +16,13 @@ class PokemonRepositoryImp implements PokemonRepository {
   Future<dynamic> getPokemons() async {
     try {
       final httpResponse = await httpClient.request(
-        '${Api.mainURL}?limit=30',
+        '${Api.pokemonUrl}?limit=30',
         method: 'get',
       );
 
       return httpResponse;
     } catch (e) {
-      throw "Falha ao buscar dados.";
+      return "Falha ao buscar dados.";
     }
   }
 
@@ -29,18 +30,32 @@ class PokemonRepositoryImp implements PokemonRepository {
   Future<dynamic> getPokemonByNameID({required String param}) async {
     try {
       final httpResponse = await httpClient.request(
-        Api.mainURL + param,
+        Api.pokemonUrl + param,
         method: 'get',
       );
 
       return httpResponse;
     } catch (e) {
-      throw "Falha ao buscar dados.";
+      return "Falha ao buscar dados.";
     }
   }
 
   @override
-  Future<dynamic> getNextPokemons({required String url}) async {
+  Future<dynamic> getPokemonSpecies({required String param}) async {
+    try {
+      final httpResponse = await httpClient.request(
+        Api.speciesURL + param,
+        method: 'get',
+      );
+
+      return httpResponse;
+    } catch (e) {
+      return "Falha ao buscar dados.";
+    }
+  }
+
+  @override
+  Future<dynamic> getPokemonByURL({required String url}) async {
     try {
       if (url.isNotEmpty) {
         final httpResponse = await httpClient.request(
@@ -50,7 +65,7 @@ class PokemonRepositoryImp implements PokemonRepository {
         return httpResponse;
       }
     } catch (e) {
-      throw "Falha ao buscar dados.";
+      return "Falha ao buscar dados.";
     }
   }
 }

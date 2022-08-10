@@ -25,6 +25,22 @@ mixin _$HomeController on HomeControllerBase, Store {
     });
   }
 
+  late final _$pokemonInfoModelAtom =
+      Atom(name: 'HomeControllerBase.pokemonInfoModel', context: context);
+
+  @override
+  PokemonInfoModel? get pokemonInfoModel {
+    _$pokemonInfoModelAtom.reportRead();
+    return super.pokemonInfoModel;
+  }
+
+  @override
+  set pokemonInfoModel(PokemonInfoModel? value) {
+    _$pokemonInfoModelAtom.reportWrite(value, super.pokemonInfoModel, () {
+      super.pokemonInfoModel = value;
+    });
+  }
+
   late final _$nextUrlAtom =
       Atom(name: 'HomeControllerBase.nextUrl', context: context);
 
@@ -61,24 +77,38 @@ mixin _$HomeController on HomeControllerBase, Store {
       AsyncAction('HomeControllerBase.getPokemons', context: context);
 
   @override
-  Future<List<PokemonModel>> getPokemons() {
-    return _$getPokemonsAsyncAction.run(() => super.getPokemons());
+  Future<List<PokemonModel>> getPokemons({required BuildContext context}) {
+    return _$getPokemonsAsyncAction
+        .run(() => super.getPokemons(context: context));
   }
 
   late final _$getPokemonsByUrlAsyncAction =
       AsyncAction('HomeControllerBase.getPokemonsByUrl', context: context);
 
   @override
-  Future<List<PokemonModel>> getPokemonsByUrl() {
-    return _$getPokemonsByUrlAsyncAction.run(() => super.getPokemonsByUrl());
+  Future<List<PokemonModel>> getPokemonsByUrl({required BuildContext context}) {
+    return _$getPokemonsByUrlAsyncAction
+        .run(() => super.getPokemonsByUrl(context: context));
   }
 
   late final _$filterPokemonAsyncAction =
       AsyncAction('HomeControllerBase.filterPokemon', context: context);
 
   @override
-  Future<List<PokemonModel>> filterPokemon(String param) {
-    return _$filterPokemonAsyncAction.run(() => super.filterPokemon(param));
+  Future<List<PokemonModel>> filterPokemon(
+      {required BuildContext context, required String param}) {
+    return _$filterPokemonAsyncAction
+        .run(() => super.filterPokemon(context: context, param: param));
+  }
+
+  late final _$getPokemonByNameAsyncAction =
+      AsyncAction('HomeControllerBase.getPokemonByName', context: context);
+
+  @override
+  Future<PokemonInfoModel> getPokemonByName(
+      {required BuildContext context, required String name}) {
+    return _$getPokemonByNameAsyncAction
+        .run(() => super.getPokemonByName(context: context, name: name));
   }
 
   late final _$HomeControllerBaseActionController =
@@ -99,6 +129,7 @@ mixin _$HomeController on HomeControllerBase, Store {
   String toString() {
     return '''
 listPokemonModel: ${listPokemonModel},
+pokemonInfoModel: ${pokemonInfoModel},
 nextUrl: ${nextUrl},
 searchAppear: ${searchAppear}
     ''';

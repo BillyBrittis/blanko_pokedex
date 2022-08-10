@@ -1,4 +1,5 @@
 import 'package:blanko_podekex/app/common/models/pokemon_model.dart';
+import 'package:blanko_podekex/app/core/utils/utils.dart';
 import 'package:blanko_podekex/app/modules/home/home_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +14,19 @@ class HomePokemon extends StatefulWidget {
 }
 
 class _HomePokemonState extends State<HomePokemon> {
+  HomeController homeController = Modular.get();
+
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Modular.get();
-
     return GestureDetector(
-      onTap: () {
-        Modular.to.navigate('/detail/', arguments: [
-          widget.pokemon,
-          homeController.listPokemonModel[widget.pokemon.id!]
-        ]);
+      onTap: () async {
+        final pokemonData = await homeController.getPokemonByName(
+            context: context, name: widget.pokemon.name!);
+
+        Modular.to.navigate(
+          '/detail/',
+          arguments: pokemonData,
+        );
       },
       child: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
@@ -39,14 +43,26 @@ class _HomePokemonState extends State<HomePokemon> {
                       ),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     )
-                  : Icon(Icons.wallpaper_rounded, size: 50),
+                  : Icon(Icons.question_mark_outlined, size: 50),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                'Nº ${widget.pokemon.id}',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
-                widget.pokemon.name!,
+                StringUtils().upperFirstCharacter(value: widget.pokemon.name!),
                 style: TextStyle(
-                    fontFamily: 'Montserrat', fontWeight: FontWeight.w400),
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ],

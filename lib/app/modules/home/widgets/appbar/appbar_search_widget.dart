@@ -28,7 +28,10 @@ class AppbarSearch extends StatelessWidget {
           child: TextField(
             controller: inputController,
             onSubmitted: (String value) {
-              homeController.filterPokemon(value);
+              homeController.filterPokemon(
+                context: context,
+                param: value.toLowerCase(),
+              );
             },
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.search),

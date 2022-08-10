@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
     final HomeController controller = Modular.get();
 
     return FutureBuilder<List<PokemonModel>>(
-      future: controller.getPokemons(),
+      future: controller.getPokemons(context: context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
@@ -31,7 +31,9 @@ class HomePage extends StatelessWidget {
         }
 
         if (snapshot.hasError) {
-          return Text("Falha ao carregar dados");
+          return Center(
+            child: Text("Falha ao carregar dados"),
+          );
         }
 
         return Container();
