@@ -1,0 +1,19 @@
+import 'package:flutter_modular/flutter_modular.dart';
+
+import 'detail_page.dart';
+
+class DetailModule extends Module {
+  @override
+  final List<Bind> binds = [];
+
+  @override
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      Modular.initialRoute,
+      child: (_, args) => DetailPage(
+        pokemon: args.data[0],
+        nextPokemon: args.data[1],
+      ),
+    ),
+  ];
+}

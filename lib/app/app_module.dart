@@ -1,4 +1,5 @@
 import 'package:blanko_podekex/app/core/data/http/http.dart';
+import 'package:blanko_podekex/app/modules/details/detail_module.dart';
 import 'package:blanko_podekex/app/modules/home/home_controller.dart';
 import 'package:blanko_podekex/app/common/repositories/pokemon_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -20,5 +21,6 @@ class AppModule extends Module {
   @override
   final List<ModularRoute> routes = [
     ModuleRoute('/', module: HomeModule()),
+    ModuleRoute('/detail/', module: DetailModule()),
   ];
 }

@@ -3,7 +3,8 @@ import 'package:blanko_podekex/app/core/data/http/http.dart';
 
 abstract class PokemonRepository {
   Future<dynamic> getPokemons();
-  Future<dynamic> getPokemonByName({required String name});
+  Future<dynamic> getNextPokemons({required String url});
+  Future<dynamic> getPokemonByNameID({required String param});
 }
 
 class PokemonRepositoryImp implements PokemonRepository {
@@ -14,7 +15,7 @@ class PokemonRepositoryImp implements PokemonRepository {
   Future<dynamic> getPokemons() async {
     try {
       final httpResponse = await httpClient.request(
-        Api.mainURL,
+        '${Api.mainURL}?limit=30',
         method: 'get',
       );
 
@@ -25,14 +26,29 @@ class PokemonRepositoryImp implements PokemonRepository {
   }
 
   @override
-  Future<dynamic> getPokemonByName({required String name}) async {
+  Future<dynamic> getPokemonByNameID({required String param}) async {
     try {
       final httpResponse = await httpClient.request(
-        Api.mainURL + name,
+        Api.mainURL + param,
         method: 'get',
       );
 
       return httpResponse;
+    } catch (e) {
+      throw "Falha ao buscar dados.";
+    }
+  }
+
+  @override
+  Future<dynamic> getNextPokemons({required String url}) async {
+    try {
+      if (url.isNotEmpty) {
+        final httpResponse = await httpClient.request(
+          url,
+          method: 'get',
+        );
+        return httpResponse;
+      }
     } catch (e) {
       throw "Falha ao buscar dados.";
     }

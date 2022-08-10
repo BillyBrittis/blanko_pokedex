@@ -15,8 +15,13 @@ class HomePage extends StatelessWidget {
       future: controller.getPokemons(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Colors.red,
+              ),
+            ),
           );
         }
 
