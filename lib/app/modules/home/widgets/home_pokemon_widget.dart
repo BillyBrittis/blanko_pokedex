@@ -38,8 +38,10 @@ class _HomePokemonState extends State<HomePokemon> {
                       imageUrl: widget.pokemon.pokemonImage(),
                       progressIndicatorBuilder:
                           (context, url, downloadProgress) => Center(
-                        child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
+                        child: Image.asset(
+                          "assets/images/pokeball.gif",
+                          gaplessPlayback: true,
+                        ),
                       ),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     )

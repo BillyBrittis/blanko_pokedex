@@ -10,7 +10,7 @@ class AppbarWidget extends StatelessWidget {
     HomeController homeController = Modular.get();
 
     return AppBar(
-      title: Text('Pokedex'),
+      title: Text('Pokedéx'),
       actions: [
         IconButton(
           icon: Icon(Icons.search),

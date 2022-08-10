@@ -2,7 +2,7 @@
     package="com.example.blanko_pokedex">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="blanko_pokedex"
+        android:label="Pokedéx"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

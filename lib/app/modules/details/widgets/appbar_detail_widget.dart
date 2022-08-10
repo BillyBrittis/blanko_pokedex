@@ -17,7 +17,7 @@ class AppbarDetail extends StatelessWidget {
       centerTitle: true,
       leading: GestureDetector(
         onTap: () {
-          Modular.to.navigate('/');
+          Modular.to.navigate('/home/');
         },
         child: Icon(Icons.arrow_back),
       ),
